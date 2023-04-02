@@ -43,7 +43,7 @@ public class UsuarioService {
 		String encoder = this.passwordEncoder.encode(usuario.getSenha());
 		usuario.setSenha(encoder);
 
-		logger.info("Usuario: " + getUserLogado() + " Cadastrando Usuarios");
+		logger.info("Usuario: " + getUserLogado() + " Cadastrando Usuario");
 		return repository.save(usuario);
 	}
 	
@@ -52,7 +52,7 @@ public class UsuarioService {
 		String encoder = this.passwordEncoder.encode(usuario.getSenha());
 		usuario.setSenha(encoder);
 
-		logger.info("Usuario: " + getUserLogado() + " Atualizando Usuario: " + usuario);
+		logger.info("Usuario: " + getUserLogado() + " Atualizando Usuario: " + usuario.getNome());
 		return repository.save(usuario);
 	}
 	
@@ -74,6 +74,7 @@ public class UsuarioService {
 		if(user != null){
 			 Boolean valid = passwordEncoder.matches(usuario.getSenha(), user.getSenha());
 				if(valid) {
+					logger.info("Usuario: " + getUserLogado() + " Gerando Token JWT");
 					return new Token(TokenUtil.createToken(user));
 				}
 		}
