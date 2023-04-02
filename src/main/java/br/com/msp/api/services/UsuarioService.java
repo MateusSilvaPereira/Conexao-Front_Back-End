@@ -4,6 +4,11 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,9 +22,10 @@ import br.com.msp.api.security.TokenUtil;
 @Service
 public class UsuarioService {
 
-	private IUsuario repository;
-	
-	private PasswordEncoder passwordEncoder;
+	private final IUsuario repository;
+
+	private final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
+	private final PasswordEncoder passwordEncoder;
 	
 	// Injeção de dependencia
 	public UsuarioService (IUsuario repository) {
@@ -27,28 +33,31 @@ public class UsuarioService {
 		this.passwordEncoder = new BCryptPasswordEncoder();
 		
 	}
-	
+
 	public List<Usuario> listaUsuario(){
-		List<Usuario> listUser = repository.findAll();
-		return listUser;
+		logger.info("Usuario: " + getUserLogado() + " Listando Usuarios");
+		return repository.findAll();
 	}
 	
 	public Usuario criarUsuario(Usuario usuario) {
 		String encoder = this.passwordEncoder.encode(usuario.getSenha());
 		usuario.setSenha(encoder);
-		Usuario user = repository.save(usuario);
-		return user;
+
+		logger.info("Usuario: " + getUserLogado() + " Cadastrando Usuarios");
+		return repository.save(usuario);
 	}
 	
 	public Usuario atualizarUsuario(Usuario usuario) {
 		
 		String encoder = this.passwordEncoder.encode(usuario.getSenha());
 		usuario.setSenha(encoder);
-		Usuario userUpdate = repository.save(usuario);
-		return userUpdate;
+
+		logger.info("Usuario: " + getUserLogado() + " Atualizando Usuario: " + usuario);
+		return repository.save(usuario);
 	}
 	
 	public void deletarUsuario(Integer id) {
+		logger.info("Usuario: " + getUserLogado() + " Excluindo Usuario");
 		repository.deleteById(id);
 		
 	}
@@ -67,11 +76,16 @@ public class UsuarioService {
 				if(valid) {
 					return new Token(TokenUtil.createToken(user));
 				}
-			
-			
 		}
-		
 		return null;
+	}
+
+	private String getUserLogado(){
+		Authentication userLogado = SecurityContextHolder.getContext().getAuthentication();
+		if(!(userLogado instanceof AnonymousAuthenticationToken)){
+			return userLogado.getName();
+		}
+		return  "Null";
 	}
 	
 }
