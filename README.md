@@ -3,7 +3,7 @@ Conexao-Front_Back-End</h1>
   ![th](https://i.ytimg.com/vi/JPED8CG8G2w/maxresdefault.jpg)
 > Application in spring boot ⚠️
 
-<h3>Nesta aplicação está sendo desenvolvido um projeto em Spring Boot onde, é utilizado a parte de segurança e geração de token com JWT e logger</h3>
+<h3>Nesta aplicação está sendo desenvolvido uma API RESTful onde, é realizado um cadastro de Cliente e a parte de segurança e geração de token com JWT e logger</h3>
 
 <h2>Dependencias utilizadas: </h2>
 
